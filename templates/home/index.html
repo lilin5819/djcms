@@ -1,0 +1,360 @@
+{% extends "home/base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+{% if article_detail %}
+<!-- Left Column -->
+<div class="col-sm-9">		
+    <!-- Article -->
+    <div class="row">
+        <article class="col-xs-12">
+            <h2>{{ article.title }}</h2>
+            <p class="pull-right"><span class="label label-default">{{ article.column }}</span> <span class="label label-default">{{ article.pub_date | date:"j M" }}</span> <span class="label label-default">{{ article.author }}</span></p>
+            <p><hr></p>
+            <p>{{ content | safe }}</p>					
+            <p></p>
+            <ul class="list-inline">
+
+                <li><a href=" "><span class="glyphicon glyphicon-comment"></span> {{ article.comment_num }} Comments</a></li>
+                <li><a href="/focus/{{ article.id }}/keep/"><span class="glyphicon glyphicon-star-empty"></span>{{ article.keep_num }} Favorites</a></li>
+                <li><a href="/focus/{{ article.id }}/poll/"><span class="glyphicon glyphicon-thumbs-up"></span>{{ article.poll_num }} Upvotes</a></li>
+            </ul>
+        </article>
+    </div>			
+    <hr>
+    
+    <!-- Comments -->
+    <h3>Comments:</h3>
+    <hr>
+    {% for comment in comments %}
+    <div class="row">
+        
+        <article class="col-xs-12">
+
+            <p class="pull-right"> <span class="label label-default">tag</span> <span class="label label-default">{{ comment.user }}</span></p>
+
+            <p>{{ comment.content }}</p>
+        <!-- 	<p><button class="btn btn-default">Read More</button></p>  -->
+            
+            <ul class="list-inline">
+                <li><a href=" ">{{ comment.pub_date | date:"j M" }}</a></li>
+                <li><a href=" "><span class="glyphicon glyphicon-comment"></span> {{ comment.comment_num }} Comments</a></li>
+                <li><a href=" "><span class="glyphicon glyphicon-thumbs-up"></span>{{ comment.poll_num }} Upvotes</a></li>
+            </ul>
+        </article>
+    </div>			
+    <hr>
+    {% endfor %}
+    <!-- CommentForm   -->
+    <div class="row">
+        <article class="col-xs-12">
+            <h4>Sharing you comment:</h4>
+            <form action="/focus/{{ article.id }}/comment/" method="post">
+                {% csrf_token %}
+                {{ commentform.as_p }}
+                <input class="btn btn-default" type="submit" value="Submit" />
+            </form>
+        </article>
+    </div>			
+    <hr>
+</div><!--/Center Column-->
+{% else  %}
+
+    <!-- Left Column -->
+    <div class="col-sm-3">
+
+        <!-- Text Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><span class="glyphicon glyphicon-pencil"></span> 任务 </h1>
+            </div>
+
+            <div class="list-group">
+                <!--<p>李翔: arm端服务器</p>-->
+                <!--<p>杨礼林: PC端WEB客户端</p>-->
+                <!--<p>胡小岸: arm LCD</p>-->
+                <!--<p>蒲琪: 安卓客户端</p>-->
+                {% for author in author_list %}
+                <p>{{ author.name }} : {{ author.task }}</p>
+                {% endfor %}
+
+                <p><button class="btn btn-default">详情</button></p>
+            </div>
+        </div>
+
+        <!-- Text Panel -->
+        <!-- List-Group Panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><span class="glyphicon glyphicon-fire"></span> 项目动态 </h1>
+            </div>
+            <div class="list-group">
+                <!--<a href="#" class="list-group-item">老师:分发项目,任务人员分配 </a>-->
+                <!--<a href="#" class="list-group-item">李翔:任务细节分配</a>-->
+                <!--<a href="#" class="list-group-item">杨礼林:WEB框架搭建</a>-->
+                <!--<a href="#" class="list-group-item">XXX: TODO</a>-->
+                <!--<a href="#" class="list-group-item">XXX: TODO</a>-->
+                {% for author in author_list %}
+                <a href="#" class="list-group-item">{{ author.name }}: {{ author.stat }}</a>
+                {% endfor %}
+            </div>
+        </div>
+
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h1 class="panel-title"><span class="glyphicon glyphicon-pencil"></span> 步骤 </h1>
+            </div>
+
+            <div  class="panel-body">
+                <a href="#" class="list-group-item">杨礼林: 1.加入同学信息. 2.完善关于视频显示 3.添加文档，图片</a>
+                <a href="#" class="list-group-item">蒲琪: 1.安卓客户端</a>
+                <p><button class="btn btn-default">详情</button></p>
+            </div>
+        </div>
+
+    </div><!--/Left Column-->
+
+
+    <!-- Center Column -->
+    <div class="col-sm-6">		
+
+        {% if request.user.is_authenticated %}
+        <div style="text-align:center;height:500px;">
+            <h2>主窗口</h2>
+            <div style="text-align: center;" class="embed-responsive embed-responsive-4by3">
+                    <!--<iframe src="http://player.youku.com/embed/XMTMyOTQ4MjEzMg==" allowfullscreen="" class="embed-responsive-item" frameborder="0" height="360" width="450"></iframe>-->
+                    <iframe src="http://192.168.2.245:8090/test.swf" allowfullscreen="" class="embed-responsive-item" frameborder="0" height="360" width="450"></iframe>
+                    <!--<iframe src="http://www.baidu.com" allowfullscreen="" class="embed-responsive-item" frameborder="0" height="360" width="450"></iframe>-->
+            </div>
+            <!--<img src="/static/img/background.jpg" width=600 height=400 alt=""/>-->
+        </div>
+        {% else %}
+        <div background="/static/img/background.jpg" style="text-align:center;height:400px;">
+
+            <!-- advertisements --> 
+            <h3><span class="glyphicon glyphicon-link"></span> 登陆后显示视频框(账号admin密码admin)</h3>
+            <div id="side-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#side-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#side-carousel" data-slide-to="1"></li>
+                    <li data-target="#side-carousel" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <a href="#">
+                            <img src="/static/img/demo1.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%201" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>web</h3>
+                            <p>python django框架</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#">
+                            <img src="/static/img/demo2.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%202" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>开发板</h3>
+                            <p>arm 三星exynos 4412 FS4412开发板</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#">
+                            <img src="/static/img/demo3.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%203" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>LCD</h3>
+                            <p>XXXXXXXXXXXXXXXXXXXXXX</p>
+                        </div>
+                    </div>			  
+                </div>
+                <a class="left carousel-control" href="#side-carousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">上一张</span>
+                </a>
+                <a class="right carousel-control" href="#side-carousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">下一张</span>
+                </a>
+            </div>
+
+
+        </div>
+        {% endif %}
+        <!-- Articles -->
+        {% for article in latest_article_list %}
+        <div class="row">
+            <article class="col-xs-12">
+                <h2><a id="article_title", href="/focus/{{ article.id }}">{{ article.title }}</a></h2>
+                <p>{{ article.content|truncatechars_html:80 | safe }}</p>
+                <!-- 	<p><button class="btn btn-default">Read More</button></p>  -->
+                <p class="pull-right"><span class="label label-default">{{ article.column }}</span> <span class="label label-default">tag</span> <span class="label label-default">{{ article.author }}</span></p>
+                <ul class="list-inline">
+                    <li><a href="#">{{ article.pub_date | date:"j M" }}</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-comment"></span> {{ article.comment_num }} Comments</a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-star-empty"></span>{{ article.keep_num }} Favorites</a></li>
+                </ul>
+            </article>
+        </div>			
+        <hr>
+        {% endfor %}
+    </div><!--/Center Column-->
+
+    {% endif  %}
+
+    <!-- Right Column -->
+    <div class="col-sm-3">
+        {% if request.user.is_authenticated %}
+        <!-- Form --> 
+        <div class="panel panel-default">				
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-user"></span> 
+                    已登录
+                </h3>
+            </div>
+            <div class="panel-body">					
+                <div style="text-align:center" class="form-group"><h4>你好: {{ user }}</h4>
+                    <div>
+                        <a href="/admin/focus/article/add/">
+                            <input class="btn btn-default" type="submit" value="写报告" />
+                        </a>
+                        <div class="btn-group" role="group">
+                            <button type="button" onclick="location.href='/admin/'" class="btn btn-info">管理</button>
+                            <button type="button" onclick="location.href='/focus/logout/'" class="btn btn-danger">退出</button>
+                            <button type="button" onclick="location.href='/admin/focus/newuser/'" class="btn btn-success">添加用户</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-log-in"></span> 
+                    未登陆
+                </h3>
+            </div>
+            <div style="text-align:center" class="panel-body">	
+                <form action="/focus/login/" method="post">
+                    {% csrf_token %}
+                    {{ loginform.non_field_errors }}
+                    <div class="form-group">
+                        {{ loginform.uid }}
+                        <!--	<input type="text" class="form-control" id="uid" name="uid" placeholder="Username">  -->
+                    </div>
+                    <div class="form-group">
+                        {{ loginform.pwd }}
+                        <!--	<input type="password" class="form-control" id="pwd" name="pwd" placeholder="Password">  -->
+                    </div>
+                    <!--<div style="text-align:center">-->
+                    <div class="btn-group" role="group">
+                        <button type="button" onclick="location.href='/admin/'" class="btn btn-info">管理</button>
+                        <button type="button,submit" class="btn btn-success">登陆</button>
+                    </div>
+                </form>				
+                    </div>
+            </div>
+            {% endif %}
+            <!-- Progress Bars -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-tasks"></span> 
+                        进度
+                    </h3>
+                </div>
+                <div class="panel-body">
+                        {% for author in author_list %}
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-{{ author.taskcolor }}" role="progressbar" aria-valuenow="{{ author.taskprogress }}"
+                                                                                                         aria-valuemin="0" aria-valuemax="100" style="width:{{ author.taskprogress }}%">
+                            {{ author.taskprogress }}% WEB {{ author.name }}
+                        </div>
+                    </div>
+                        {% endfor %}
+<!--                    <div class="progress">-->
+                        <!--<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="80"-->
+                                                                                       <!--aria-valuemin="0" aria-valuemax="100" style="width:80%">-->
+                            <!--80% SERVER 李翔-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="progress">-->
+                        <!--<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="45"-->
+                                                                                          <!--aria-valuemin="0" aria-valuemax="100" style="width:45%">-->
+                            <!--45% 驱动-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="progress">-->
+                        <!--<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="35"-->
+                                                                                         <!--aria-valuemin="0" aria-valuemax="100" style="width:45%">-->
+                            <!--45% LCD 胡小岸-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+        {% if request.user.is_authenticated %}
+            <!-- advertisements --> 
+            <h3><span class="glyphicon glyphicon-link"></span> 过程</h3>
+            <div id="side-carousel" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                    <li data-target="#side-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#side-carousel" data-slide-to="1"></li>
+                    <li data-target="#side-carousel" data-slide-to="2"></li>
+                </ol>
+                <div class="carousel-inner" role="listbox">
+                    <div class="item active">
+                        <a href="#">
+                            <img src="/static/img/demo1.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%201" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>web</h3>
+                            <p>python django框架</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#">
+                            <img src="/static/img/demo2.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%202" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>开发板</h3>
+                            <p>arm 三星exynos 4412 FS4412开发板</p>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <a href="#">
+                            <img src="/static/img/demo3.jpg" class="img-responsive" src="holder.js/400x300?bg=FF8C00&text=Image%203" alt="">
+                        </a>
+                        <div class="carousel-caption">
+                            <h3>LCD</h3>
+                            <p>XXXXXXXXXXXXXXXXXXXXXX</p>
+                        </div>
+                    </div>			  
+                </div>
+                <a class="left carousel-control" href="#side-carousel" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">上一张</span>
+                </a>
+                <a class="right carousel-control" href="#side-carousel" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">下一张</span>
+                </a>
+            </div>
+            {% endif %}
+
+        </div><!--/Right Column -->
+
+    </div><!--/container-fluid-->
+
+    
+{% include "home/footer.html" %}
+
+{% endblock %}
+

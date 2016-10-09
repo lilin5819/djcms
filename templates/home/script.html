@@ -1,0 +1,42 @@
+{% load staticfiles %}
+
+        <!-- jQuery -->
+        <script src="{% static "js/jquery-1.11.3.min.js" %}">
+            <script type="text/javascript" language="javascript">
+                function update(id) {
+                    $.getJSON("/json/arm/",function(data) {
+                        $.each(data, function(){
+                            $("#content").html('<p> temp:'+ this.temp + ',light:' + this.light + ',hum:' + this.hum + '</p>');
+                        });
+                    });
+                }
+
+                function timeDown(limit, i) {
+                    limit--;
+                    if (i > 4) {
+                            i = 0;
+                    }
+                    if (limit < 0) {
+                            limit = 3;
+                            update(i);
+                            i++;
+                    }
+                    $('#time').text(limit + '秒后刷新');
+                    setTimeout(function() {
+                            timeDown(limit, i);
+                    }, 1000)
+
+                }
+                $(document).ready(function() {
+                timeDown(3, 0)
+                })
+            </script>
+
+        <!-- Bootstrap Core JavaScript -->
+        <script src="{% static "js/bootstrap.min.js" %}"></script>
+
+        <!-- IE10 viewport bug workaround -->
+        <script src="{% static "js/ie10-viewport-bug-workaround.js" %}"></script>
+
+        <!-- Placeholder Images -->
+        <script src="{% static "js/holder.min.js" %}"></script>
